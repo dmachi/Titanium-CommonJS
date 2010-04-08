@@ -1,0 +1,30 @@
+Titanium-CommonJS
+
+A Synchronous CommonJS Loader Module for Titanium Desktop and eventually some core CommonJS modules which use 
+the existing Titanium modules for low level functionality (system, file, etc).
+
+Installation
+
+Installation is pretty easy, but somewhat wierd and possibly unusable in practice at the moment.  
+There are no docs for creating custom modules for the Titanium Desktop, so while it is working in
+basic form and doesn't require on any new low level support, it is only usable in development until 
+Appcelerator clues us in. Directions are for Mac, but should work more or less the same in windows
+after changing the paths.
+
+	- create a /Library/Application Support/Titanium/modules/commonjs directory.  
+
+	- Checkout a copy of git@github.com:dmachi/Titanium-CommonJS.git and place it in the above 
+	directory with a name like 1.0.0 where 1.0.0 is the version of the Titanium SDK you are using.  
+	You should end up with /Library/Application Support/Titanium/modules/commonjs/1.0.0/commonjsmodule.js
+
+This is essentially all of the installation currently required for the loader itself.  It will currently search in 
+your applications Resources/CommonJS folder when you require dependencies. Loading a resource looks like:
+
+(in my Resources index.html)
+<script type="text/javascript">
+	var Bleh = Titanium.CommonJS.require("foo/bar").Bleh	
+</script>
+
+Within CommonJS modules themselves, require() can be used by itself, but 'require()' isn't available in the root
+context.  Be sure to use the Titanium.CommonJS.require() in those cases.
+
