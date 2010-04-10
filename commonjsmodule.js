@@ -1,9 +1,20 @@
 (function(){
 	var basePath = Titanium.Filesystem.getResourcesDirectory() + "/CommonJS";
 	var modules = {};
+        var coreLibsPath;
+	var paths = [];
+
+	var installed = Titanium.API.getInstalledModules();
+	installed.some(function(m){
+		if (m.getName()=="commonjs"){
+			paths.push(m.getPath() + "/lib");
+		}
+	});
+
+	paths.push(Titanium.Filesystem.getResourcesDirectory() + "/CommonJS");
 
 	// paths to packages
-	var paths = [basePath]
+	//var paths = [basePath]
 
 	// paths to search within packages
 	var subSearchPaths = ["engines/titanium/lib","engines/default/lib","lib"]
@@ -28,11 +39,13 @@
 			currentId = currentId.substring(0, currentId.lastIndexOf('/') ) || currentId;
 			return (currentId + "/" + id ).replace(/\/\.\.\/[^\/]*/g,'').replace(/\.\//g,'');
 		}
+		//Titanium.API.debug("   Absolute Request: " + id);
 		return id;
 	}
 
 	function makeRequire(currentId){
 		var require = function(id){
+			Titanium.API.debug("[From: " + currentId + "] require(" + id + ")");
 			id = resolveId(currentId, id);
 			if(modules[id]){
 				return modules[id];
@@ -51,12 +64,12 @@
 					}else{
 						var idPath = idParts.join("/");
 						var name = path + "/" + idPath + ".js";	
+						//Titanium.API.debug("  Single Vl Search: " + name);	
 						var f = Titanium.Filesystem.getFile(name);
 						if (f.isFile()) {	
 							file = f;
 							return path;
 						}
-						Titanium.API.error("Unable to locate resource: " + id);	
 						return;
 					}
 
@@ -71,7 +84,7 @@
 					var idPath = idParts.join("/");
 
 					var name = path + "/" + idPath + ".js";	
-					Titanium.API.debug("Searching for file: " + name);
+					//Titanium.API.debug("Searching for file: " + name);
 					var f = Titanium.Filesystem.getFile(name);
 					if (f.isFile()) {	
 						file = f;
@@ -82,6 +95,7 @@
 			});
 
 			if (path && file){ 
+				Titanium.API.info("[" + id + "] Loading Resource from: " + file.nativePath());
         			var source = file.read();
 				var factory = eval("(function(require, exports, module){" + source + "})"); 
 				factory(makeRequire(id), exports, {id:id});
