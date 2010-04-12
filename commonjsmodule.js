@@ -45,7 +45,7 @@
 
 	function makeRequire(currentId){
 		var require = function(id){
-			Titanium.API.debug("[From: " + currentId + "] require(" + id + ")");
+			//Titanium.API.debug("[From: " + currentId + "] require(" + id + ")");
 			id = resolveId(currentId, id);
 			if(modules[id]){
 				return modules[id];
