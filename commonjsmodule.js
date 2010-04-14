@@ -1,9 +1,10 @@
 (function(){
-	var basePath = Titanium.Filesystem.getResourcesDirectory() + "/CommonJS";
+	Titanium.API.debug("Loading commonjs module....");
 	var modules = {};
         var coreLibsPath;
 	var paths = [];
-
+	print = Titanium.API.info;
+	
 	var installed = Titanium.API.getInstalledModules();
 	installed.some(function(m){
 		if (m.getName()=="commonjs"){
@@ -45,7 +46,7 @@
 
 	function makeRequire(currentId){
 		var require = function(id){
-			//Titanium.API.debug("[From: " + currentId + "] require(" + id + ")");
+			Titanium.API.debug("[From: " + currentId + "] require(" + id + ")");
 			id = resolveId(currentId, id);
 			if(modules[id]){
 				return modules[id];
